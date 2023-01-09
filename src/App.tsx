@@ -49,76 +49,55 @@ function App(): React.ReactElement {
           const item = bankContents.find((content) => content.position === i);
           const isActive = activeSpot === i;
 
-          if (item !== undefined) {
-            return (
-              <div key={i} className="bankSlot">
-                <img
-                  draggable
-                  onDragStart={() => setDraggedItem(item)}
-                  onDrop={(e) => {
-                    if (draggedItem == null) {
-                      console.error('No dragged item in onDrop');
-                      return;
-                    }
+          return (
+            <div
+              key={i}
+              className="bankSlot"
+              draggable
+              onDragStart={() => item != null && setDraggedItem(item)}
+              onDrop={(e) => {
+                if (draggedItem == null) {
+                  console.error('No dragged item in onDrop');
+                  return;
+                }
 
-                    setBankContents(
-                      bankContents
-                        .filter((i) => i.id !== draggedItem?.id && i.id !== item.id)
-                        .concat([
-                          { ...draggedItem, position: i },
-                          { ...item, position: draggedItem.position }
-                        ])
-                    );
-                    setActiveSpotWhenNoDraggedItem(i);
-                    setDraggedItem(null);
-                  }}
-                  onMouseOver={() => setActiveSpotWhenNoDraggedItem(i)}
-                  onMouseOut={() => setActiveSpotWhenNoDraggedItem(i)}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setActiveSpotWhenNoDraggedItem(i);
-                  }}
-                  style={{
-                    outline: draggedItem != null && isActive ? '1px solid red' : ''
-                  }}
-                  key={i}
-                  src={`https://raw.githubusercontent.com/osrsbox/osrsbox-db/master/docs/items-icons/${item.id}.png`}
-                />
-              </div>
-            );
-          } else {
-            return (
-              <div
-                key={i}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setActiveSpotWhenNoDraggedItem(i);
-                }}
-                style={{
-                  outline: draggedItem != null && isActive ? '1px solid red' : ''
-                }}
-                onDrop={(e) => {
-                  if (draggedItem == null) {
-                    console.error('No dragged item in onDrop');
-                    return;
-                  }
+                if (item != null) {
+                  // switch the item positions
+                  setBankContents(
+                    bankContents
+                      .filter((i) => i.id !== draggedItem?.id && i.id !== item.id)
+                      .concat([
+                        { ...draggedItem, position: i },
+                        { ...item, position: draggedItem.position }
+                      ])
+                  );
+                } else {
                   setBankContents(
                     bankContents
                       .filter((i) => i.id !== draggedItem.id)
                       .concat([{ ...draggedItem, position: i }])
                   );
-                  setActiveSpotWhenNoDraggedItem(i);
-                  setDraggedItem(null);
-                }}
-                onMouseOver={() => {
-                  setActiveSpotWhenNoDraggedItem(i);
-                }}
-                onMouseOut={() => {
-                  setActiveSpotWhenNoDraggedItem(i);
-                }}
-              />
-            );
-          }
+                }
+
+                setActiveSpotWhenNoDraggedItem(i);
+                setDraggedItem(null);
+              }}
+              onMouseOver={() => setActiveSpotWhenNoDraggedItem(i)}
+              onMouseOut={() => setActiveSpotWhenNoDraggedItem(i)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setActiveSpotWhenNoDraggedItem(i);
+              }}
+              style={{
+                outline: draggedItem != null && isActive ? '1px solid red' : ''
+              }}>
+              {item != null && (
+                <img
+                  src={`https://raw.githubusercontent.com/osrsbox/osrsbox-db/master/docs/items-icons/${item.id}.png`}
+                />
+              )}
+            </div>
+          );
         })}
       </div>
     </div>
